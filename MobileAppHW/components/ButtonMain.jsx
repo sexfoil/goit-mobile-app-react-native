@@ -1,10 +1,10 @@
 import { StyleSheet, Text, View } from "react-native";
 
-export default function ButtonMain({ handleSubmit }) {
+export default function ButtonMain({ handleSubmit, title }) {
   return (
     <View style={styles.container}>
       <Text onPress={handleSubmit} style={styles.text}>
-        Зареєстуватися
+        {title}
       </Text>
     </View>
   );

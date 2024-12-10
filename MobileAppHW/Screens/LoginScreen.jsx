@@ -44,7 +44,7 @@ export default function LoginScreen() {
               extra={"Показати"}
             />
           </KeyboardAvoidingView>
-          <ButtonMain handleSubmit={handleSubmit} />
+          <ButtonMain handleSubmit={handleSubmit} title={"Увійти"} />
           <Text style={styles.helpText}>
             Немає акаунту? <Text style={styles.link}>Зареєструватися</Text>
           </Text>

@@ -53,7 +53,7 @@ export default function RegistrationScreen() {
               extra={"Показати"}
             />
           </KeyboardAvoidingView>
-          <ButtonMain handleSubmit={handleSubmit} />
+          <ButtonMain handleSubmit={handleSubmit} title={"Зареєстуватися"} />
           <Text style={styles.helpText}>Вже є акаунт? Увійти</Text>
         </View>
       </TouchableWithoutFeedback>
