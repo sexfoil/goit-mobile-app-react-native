@@ -1,3 +1,4 @@
+import LoginScreen from "./Screens/LoginScreen";
 import RegistrationScreen from "./Screens/RegistrationScreen";
 import { useFonts } from "expo-font";
 
@@ -12,8 +13,8 @@ export default function App() {
   }
   return (
     <>
-      <RegistrationScreen />
-      {/* some */}
+      {/* <RegistrationScreen /> */}
+      <LoginScreen />
     </>
   );
 }
