@@ -1,6 +1,8 @@
+import "react-native-gesture-handler";
 import LoginScreen from "./Screens/LoginScreen";
 import RegistrationScreen from "./Screens/RegistrationScreen";
 import { useFonts } from "expo-font";
+import { NavigationContainer } from "@react-navigation/native";
 
 export default function App() {
   const [fontsLoaded] = useFonts({
@@ -12,9 +14,9 @@ export default function App() {
     return null;
   }
   return (
-    <>
+    <NavigationContainer>
       {/* <RegistrationScreen /> */}
       <LoginScreen />
-    </>
+    </NavigationContainer>
   );
 }
