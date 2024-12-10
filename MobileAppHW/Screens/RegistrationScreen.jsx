@@ -20,7 +20,9 @@ export default function RegistrationScreen() {
   const [password, setPassword] = useState("");
 
   const handleSubmit = () => {
-    console.log("Info: ", login, email, password);
+    console.log(
+      `SUBMIT FORM: login='${login}', email='${email}', password='${password}'`
+    );
   };
 
   return (
