@@ -1,27 +1,70 @@
-import { ImageBackground, StyleSheet, Text, View } from "react-native";
-import BackgroundImage from "../assets/background.png";
+import {
+  ImageBackground,
+  Keyboard,
+  KeyboardAvoidingView,
+  Platform,
+  StyleSheet,
+  Text,
+  TouchableWithoutFeedback,
+  View,
+} from "react-native";
+import { useState } from "react";
+import BackgroundImage from "../assets/images/background.png";
 import ButtonMain from "../components/ButtonMain";
 import InputField from "../components/InputField";
 import AvatarBox from "../components/AvatarBox";
 
 export default function RegistrationScreen() {
+  const [login, setLogin] = useState("");
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+
+  const handleSubmit = () => {
+    console.log("Info: ", login, email, password);
+  };
+
   return (
     <ImageBackground source={BackgroundImage} style={styles.background}>
-      <View style={styles.inputPanel}>
-        <AvatarBox />
-        <Text style={styles.titleText}>Реєстрація</Text>
-        <InputField placeholder={"Логін"} />
-        <InputField placeholder={"Адреса електронної пошти"} />
-        <InputField placeholder={"Пароль"} extra={"Показати"} />
-        <ButtonMain />
-        <Text style={styles.helpText}>Вже є акаунт? Увійти</Text>
-      </View>
+      <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
+        <View style={styles.panel}>
+          <AvatarBox />
+          <Text style={styles.titleText}>Реєстрація</Text>
+          <KeyboardAvoidingView
+            style={styles.inputBlock}
+            behavior={Platform.OS == "ios" ? "padding" : "height"}
+          >
+            <InputField
+              inputText={login}
+              handleInputText={setLogin}
+              placeholder={"Логін"}
+            />
+            <InputField
+              inputText={email}
+              handleInputText={setEmail}
+              placeholder={"Адреса електронної пошти"}
+            />
+            <InputField
+              inputText={password}
+              handleInputText={setPassword}
+              placeholder={"Пароль"}
+              password={true}
+              extra={"Показати"}
+            />
+          </KeyboardAvoidingView>
+          <ButtonMain handleSubmit={handleSubmit} />
+          <Text style={styles.helpText}>Вже є акаунт? Увійти</Text>
+        </View>
+      </TouchableWithoutFeedback>
     </ImageBackground>
   );
 }
 
 const styles = StyleSheet.create({
-  inputPanel: {
+  inputBlock: {
+    gap: 16,
+    justifyContent: "space-between",
+  },
+  panel: {
     position: "relative",
     flex: 0,
     backgroundColor: "#FFFFFF",
@@ -30,21 +73,20 @@ const styles = StyleSheet.create({
     borderTopRightRadius: 25,
     justifyContent: "flex-start",
     alignItems: "center",
-    rowGap: 16,
     paddingHorizontal: 16,
   },
   titleText: {
     marginTop: 92,
     marginBottom: 32,
     fontSize: 30,
-    fontWeight: "500",
+    fontFamily: "Roboto-Medium",
     color: "#212121",
     letterSpacing: 0.3,
     textAlign: "center",
   },
   helpText: {
     fontSize: 16,
-    fontWeight: "400",
+    fontFamily: "Roboto-Regular",
     color: "#1B4371",
     textAlign: "center",
   },

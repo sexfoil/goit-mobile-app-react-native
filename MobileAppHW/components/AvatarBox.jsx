@@ -1,5 +1,5 @@
 import { Image, StyleSheet, Text, View } from "react-native";
-import AddIcon from "../assets/add_icon.png";
+import AddIcon from "../assets/images/add_icon.png";
 
 export default function AvatarBox() {
   return (
