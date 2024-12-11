@@ -13,16 +13,21 @@ import BackgroundImage from "../assets/images/background.png";
 import ButtonMain from "../components/ButtonMain";
 import InputField from "../components/InputField";
 import AvatarBox from "../components/AvatarBox";
+import { useNavigation } from "@react-navigation/native";
 
 export default function RegistrationScreen() {
   const [login, setLogin] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
+  const navigation = useNavigation();
+
   const handleSubmit = () => {
-    console.log(
-      `SUBMIT REGISTRATION FORM: login='${login}', email='${email}', password='${password}'`
-    );
+    if (!login && !email && !password) {
+      alert("Login, Email and Password must not be empty!");
+    } else {
+      alert(`Registered: email='${email}', password='${password}'`);
+    }
   };
 
   return (
@@ -54,7 +59,15 @@ export default function RegistrationScreen() {
             />
           </KeyboardAvoidingView>
           <ButtonMain handleSubmit={handleSubmit} title={"Зареєстуватися"} />
-          <Text style={styles.helpText}>Вже є акаунт? Увійти</Text>
+          <Text style={styles.helpText}>
+            Вже є акаунт?{" "}
+            <Text
+              style={styles.link}
+              onPress={() => navigation.navigate("Login")}
+            >
+              Увійти
+            </Text>
+          </Text>
         </View>
       </TouchableWithoutFeedback>
     </ImageBackground>
@@ -91,6 +104,9 @@ const styles = StyleSheet.create({
     fontFamily: "Roboto-Regular",
     color: "#1B4371",
     textAlign: "center",
+  },
+  link: {
+    textDecorationLine: "underline",
   },
   container: {
     flex: 1,

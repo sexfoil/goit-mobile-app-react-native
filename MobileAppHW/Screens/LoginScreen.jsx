@@ -8,18 +8,28 @@ import {
   TouchableWithoutFeedback,
   View,
 } from "react-native";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import BackgroundImage from "../assets/images/background.png";
 import ButtonMain from "../components/ButtonMain";
 import InputField from "../components/InputField";
-import AvatarBox from "../components/AvatarBox";
+import { useNavigation, useRoute } from "@react-navigation/native";
 
 export default function LoginScreen() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
+  const navigation = useNavigation();
+
   const handleSubmit = () => {
-    console.log(`SUBMIT LOGIN FORM: email='${email}', password='${password}'`);
+    if (!email && !password) {
+      alert("Email and Password must not be empty!");
+      return;
+    }
+    navigation.navigate("Home", {
+      email,
+      password,
+    });
+    console.log(`Logged In: email='${email}', password='${password}'`);
   };
 
   return (
@@ -46,7 +56,13 @@ export default function LoginScreen() {
           </KeyboardAvoidingView>
           <ButtonMain handleSubmit={handleSubmit} title={"Увійти"} />
           <Text style={styles.helpText}>
-            Немає акаунту? <Text style={styles.link}>Зареєструватися</Text>
+            Немає акаунту?{" "}
+            <Text
+              style={styles.link}
+              onPress={() => navigation.navigate("Registration")}
+            >
+              Зареєструватися
+            </Text>
           </Text>
         </View>
       </TouchableWithoutFeedback>
