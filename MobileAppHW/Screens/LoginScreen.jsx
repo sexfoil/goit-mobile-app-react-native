@@ -8,15 +8,15 @@ import {
   TouchableWithoutFeedback,
   View,
 } from "react-native";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import BackgroundImage from "../assets/images/background.png";
 import ButtonMain from "../components/ButtonMain";
 import InputField from "../components/InputField";
 import { useNavigation, useRoute } from "@react-navigation/native";
 
 export default function LoginScreen() {
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
+  const [email, setEmail] = useState("sly");
+  const [password, setPassword] = useState("123");
 
   const navigation = useNavigation();
 

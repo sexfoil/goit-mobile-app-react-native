@@ -9,7 +9,6 @@ import AddIcon from "../components/icons/AddIcon";
 import BackArrowIcon from "../components/icons/BackArrowIcon";
 import LogoutIcon from "../components/icons/LogoutIcon";
 import MenuIcon from "../components/icons/MenuIcon";
-import TrashIcon from "../components/icons/TrashIcon";
 import UserIcon from "../components/icons/UserIcon";
 
 const Tabs = createBottomTabNavigator();
