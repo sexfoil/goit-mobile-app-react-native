@@ -1,12 +1,15 @@
 import {
+  Button,
   Keyboard,
   KeyboardAvoidingView,
   Platform,
   StyleSheet,
   Text,
+  TouchableOpacity,
   TouchableWithoutFeedback,
   View,
 } from "react-native";
+import { CameraView, CameraType, useCameraPermissions } from "expo-camera";
 import { useEffect, useState } from "react";
 import CameraIcon from "../components/icons/CameraIcon";
 import TrashIcon from "../components/icons/TrashIcon";
@@ -14,6 +17,7 @@ import ButtonMain from "../components/ButtonMain";
 import InputTextField from "../components/InputTextField";
 
 export default function CreatePostsScreen() {
+  const [permission, requestPermission] = useCameraPermissions();
   const [isReady, setIsReady] = useState(false);
   const [postImage, setPostImage] = useState({ img: "src" });
   const [postName, setPostName] = useState("");
@@ -34,16 +38,29 @@ export default function CreatePostsScreen() {
     }
   };
 
+  if (!permission) {
+    return <View />;
+  }
+
+  if (!permission.granted) {
+    return (
+      <View style={styles.container}>
+        <Text>We need your permission to show the camera</Text>
+        <Button onPress={requestPermission} title="grant permission" />
+      </View>
+    );
+  }
+
   return (
     <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
       <View onPress={Keyboard.dismiss} style={styles.container}>
         <View style={styles.postArea}>
           <View style={styles.imageArea}>
-            <View style={styles.image}>
-              <View style={styles.svgBox}>
+            <CameraView style={styles.image} facing="back">
+              <TouchableOpacity style={styles.svgBox}>
                 <CameraIcon />
-              </View>
-            </View>
+              </TouchableOpacity>
+            </CameraView>
             <Text style={styles.imageName}>Завантажте фото</Text>
           </View>
           <KeyboardAvoidingView
