@@ -1,5 +1,6 @@
 import {
   Button,
+  Image,
   Keyboard,
   KeyboardAvoidingView,
   Platform,
@@ -10,39 +11,64 @@ import {
   View,
 } from "react-native";
 import { CameraView, CameraType, useCameraPermissions } from "expo-camera";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
+import * as MediaLibrary from "expo-media-library";
 import CameraIcon from "../components/icons/CameraIcon";
 import TrashIcon from "../components/icons/TrashIcon";
 import ButtonMain from "../components/ButtonMain";
 import InputTextField from "../components/InputTextField";
+import DefaultImage from "../assets/images/default.jpg";
 
 export default function CreatePostsScreen() {
-  const [permission, requestPermission] = useCameraPermissions();
+  const [permissionCamera, requestCameraPermission] = useCameraPermissions();
+  const camera = useRef();
   const [isReady, setIsReady] = useState(false);
-  const [postImage, setPostImage] = useState({ img: "src" });
+  const [postImage, setPostImage] = useState("");
   const [postName, setPostName] = useState("");
   const [postLocation, setPostLocation] = useState("");
+  const [permissionMediaLibrary, requestMediaLibraryPermission] =
+    MediaLibrary.usePermissions();
 
   useEffect(() => {
     const value = postImage && postName.length >= 3 && postLocation.length >= 3;
     setIsReady(value);
-    console.log(postName, postLocation, postImage);
-    console.log(value);
   }, [postName, postLocation, postImage]);
+
+  const takePicture = async () => {
+    if (!camera) {
+      return;
+    }
+    const { uri } = await camera.current.takePictureAsync();
+    setPostImage(uri);
+    await MediaLibrary.createAssetAsync(uri);
+  };
+
+  const handlePicture = () => {
+    setPostImage("");
+  };
 
   const handleSubmit = () => {
     if (isReady) {
       console.log("PRESS", isReady);
-      setPostName("");
-      setPostLocation("");
     }
   };
 
-  if (!permission) {
+  const handleDelete = () => {
+    setPostName("");
+    setPostLocation("");
+    setPostImage("");
+  };
+
+  const requestPermission = async () => {
+    await requestCameraPermission();
+    await requestMediaLibraryPermission();
+  };
+
+  if (!permissionCamera) {
     return <View />;
   }
 
-  if (!permission.granted) {
+  if (!permissionCamera.granted) {
     return (
       <View style={styles.container}>
         <Text>We need your permission to show the camera</Text>
@@ -56,12 +82,31 @@ export default function CreatePostsScreen() {
       <View onPress={Keyboard.dismiss} style={styles.container}>
         <View style={styles.postArea}>
           <View style={styles.imageArea}>
-            <CameraView style={styles.image} facing="back">
-              <TouchableOpacity style={styles.svgBox}>
-                <CameraIcon />
-              </TouchableOpacity>
-            </CameraView>
-            <Text style={styles.imageName}>Завантажте фото</Text>
+            {postImage ? (
+              <Image
+                style={{ ...styles.image, borderWidth: 0 }}
+                source={DefaultImage}
+              ></Image>
+            ) : (
+              <CameraView
+                ref={camera}
+                style={{ ...styles.image, borderWidth: 1 }}
+                facing="back"
+              >
+                <TouchableOpacity style={styles.svgBox} onPress={takePicture}>
+                  <CameraIcon />
+                </TouchableOpacity>
+              </CameraView>
+            )}
+            <Text
+              style={{
+                ...styles.imageName,
+                color: postImage ? "#FF6C00" : "#BDBDBD",
+              }}
+              onPress={handlePicture}
+            >
+              {postImage ? "Редагувати фото" : "Завантажте фото"}
+            </Text>
           </View>
           <KeyboardAvoidingView
             style={styles.inputArea}
@@ -86,7 +131,9 @@ export default function CreatePostsScreen() {
             isActive={isReady}
           />
         </View>
-        <TrashIcon />
+        <TouchableOpacity onPress={handleDelete}>
+          <TrashIcon />
+        </TouchableOpacity>
       </View>
     </TouchableWithoutFeedback>
   );
@@ -117,12 +164,11 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderRadius: 8,
     borderColor: "#E8E8E8",
-    backgroundColor: "#F6F6F6",
+    // backgroundColor: "#F6F6F6",
   },
   imageName: {
     width: "100%",
     textAlign: "left",
-    color: "#BDBDBD",
     fontSize: 16,
     fontFamily: "Roboto-Regular",
   },
