@@ -13,21 +13,37 @@ import {
 import { CameraView, CameraType, useCameraPermissions } from "expo-camera";
 import { useEffect, useRef, useState } from "react";
 import * as MediaLibrary from "expo-media-library";
+import * as Location from "expo-location";
 import CameraIcon from "../components/icons/CameraIcon";
 import TrashIcon from "../components/icons/TrashIcon";
 import ButtonMain from "../components/ButtonMain";
 import InputTextField from "../components/InputTextField";
 import DefaultImage from "../assets/images/default.jpg";
+import { useNavigation } from "@react-navigation/native";
 
 export default function CreatePostsScreen() {
+  const navigation = useNavigation();
   const [permissionCamera, requestCameraPermission] = useCameraPermissions();
   const camera = useRef();
   const [isReady, setIsReady] = useState(false);
   const [postImage, setPostImage] = useState("");
   const [postName, setPostName] = useState("");
+  const [location, setLocation] = useState(null);
   const [postLocation, setPostLocation] = useState("");
-  const [permissionMediaLibrary, requestMediaLibraryPermission] =
-    MediaLibrary.usePermissions();
+  const [permissionResponse, requestPermission] = MediaLibrary.usePermissions();
+  const [errorMsg, setErrorMsg] = useState(null);
+
+  useEffect(() => {
+    async function requestLocationPermission() {
+      let { status } = await Location.requestForegroundPermissionsAsync();
+      if (status !== "granted") {
+        setErrorMsg("Permission to access location was denied");
+        return;
+      }
+    }
+
+    requestLocationPermission();
+  }, []);
 
   useEffect(() => {
     const value = postImage && postName.length >= 3 && postLocation.length >= 3;
@@ -38,18 +54,43 @@ export default function CreatePostsScreen() {
     if (!camera) {
       return;
     }
+
+    if (permissionResponse.status !== "granted") {
+      await requestPermission();
+    }
+
     const { uri } = await camera.current.takePictureAsync();
     setPostImage(uri);
-    await MediaLibrary.createAssetAsync(uri);
+    await MediaLibrary.saveToLibraryAsync(uri);
+
+    let location = await Location.getCurrentPositionAsync({});
+    setLocation(location);
   };
 
-  const handlePicture = () => {
+  const handlePictureDelete = () => {
     setPostImage("");
   };
 
   const handleSubmit = () => {
     if (isReady) {
-      console.log("PRESS", isReady);
+      navigation.navigate("Home", {
+        screen: "Posts",
+        params: {
+          newPost: {
+            id: `${Date.now()}`,
+            image: DefaultImage,
+            name: postName,
+            comments: [],
+            likes: 0,
+            location: {
+              name: postLocation,
+              lat: location?.coords?.latitude,
+              lon: location?.coords?.longitude,
+            },
+          },
+        },
+      });
+      handleDelete();
     }
   };
 
@@ -59,9 +100,8 @@ export default function CreatePostsScreen() {
     setPostImage("");
   };
 
-  const requestPermission = async () => {
+  const cameraPermission = async () => {
     await requestCameraPermission();
-    await requestMediaLibraryPermission();
   };
 
   if (!permissionCamera) {
@@ -72,7 +112,7 @@ export default function CreatePostsScreen() {
     return (
       <View style={styles.container}>
         <Text>We need your permission to show the camera</Text>
-        <Button onPress={requestPermission} title="grant permission" />
+        <Button onPress={cameraPermission} title="grant permission" />
       </View>
     );
   }
@@ -103,7 +143,7 @@ export default function CreatePostsScreen() {
                 ...styles.imageName,
                 color: postImage ? "#FF6C00" : "#BDBDBD",
               }}
-              onPress={handlePicture}
+              onPress={handlePictureDelete}
             >
               {postImage ? "Редагувати фото" : "Завантажте фото"}
             </Text>
@@ -164,7 +204,6 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderRadius: 8,
     borderColor: "#E8E8E8",
-    // backgroundColor: "#F6F6F6",
   },
   imageName: {
     width: "100%",

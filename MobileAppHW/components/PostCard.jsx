@@ -1,39 +1,63 @@
-import { Image, StyleSheet, Text, View } from "react-native";
+import { Image, StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import DefaultImage from "../assets/images/default.jpg";
 import CommentIcon from "./icons/CommentIcon";
 import GeoMarkerIcon from "./icons/GeoMarkerIcon";
 import LikeIcon from "./icons/LikeIcon";
+import { useNavigation } from "@react-navigation/native";
 
-export default function PostCard({ isProfile = true }) {
+export default function PostCard({
+  id,
+  image = DefaultImage,
+  name,
+  comments = [],
+  likes = 0,
+  location = { name: "N/A", lat: 0, lon: 0 },
+  isProfile = true,
+}) {
+  const navigation = useNavigation();
+
+  const navigateToComments = () => {
+    navigation.navigate("Comments", {
+      comments,
+    });
+  };
+
+  const navigateToMap = () => {
+    navigation.navigate("Map", {
+      name,
+      location,
+    });
+  };
+
   return (
     <View style={styles.container}>
-      <Image source={DefaultImage} style={styles.image} />
-      <Text style={styles.name}>Крутий фотограф</Text>
+      <Image source={image} style={styles.image} />
+      <Text style={styles.name}>{name ? name : `Image_${id}`}</Text>
       <View style={styles.info}>
         <View style={styles.statistic}>
-          <View style={styles.item}>
+          <TouchableOpacity style={styles.item} onPress={navigateToComments}>
             <View style={styles.svg}>
               <CommentIcon />
             </View>
-            <Text style={styles.value}>10</Text>
-          </View>
+            <Text style={styles.value}>{comments.length}</Text>
+          </TouchableOpacity>
           {isProfile && (
             <View style={styles.item}>
               <View style={styles.svg}>
                 <LikeIcon />
               </View>
-              <Text style={styles.value}>10</Text>
+              <Text style={styles.value}>{likes}</Text>
             </View>
           )}
         </View>
-        <View style={styles.geo}>
+        <TouchableOpacity style={styles.geo} onPress={navigateToMap}>
           <View style={styles.svg}>
             <GeoMarkerIcon />
           </View>
           <Text style={{ ...styles.value, textDecorationLine: "underline" }}>
-            Укрїна, Київ
+            {location.name}
           </Text>
-        </View>
+        </TouchableOpacity>
       </View>
     </View>
   );
@@ -75,7 +99,6 @@ const styles = StyleSheet.create({
     borderRadius: 8,
   },
   container: {
-    // flex: 1,
     width: "100%",
     justifyContent: "space-between",
     rowGap: 8,

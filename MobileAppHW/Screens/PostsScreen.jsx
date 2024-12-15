@@ -1,13 +1,20 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { FlatList, Image, StyleSheet, Text, View } from "react-native";
 import OwnerImage from "../assets/images/owner.jpg";
 import PostCard from "../components/PostCard";
+import { POSTS } from "../data/posts";
 
-export default function PostsScreen() {
-  const [posts, setPosts] = useState([
-    { id: "1", title: "Post 1 Title" },
-    { id: "2", title: "Post 2 Title" },
-  ]);
+export default function PostsScreen({ navigation, route }) {
+  const [posts, setPosts] = useState(POSTS);
+  const params = route?.params;
+
+  useEffect(() => {
+    if (!params?.newPost) {
+      return;
+    }
+    const updated = [...posts, params.newPost];
+    setPosts(updated);
+  }, [params]);
 
   return (
     <View style={styles.container}>
@@ -21,10 +28,10 @@ export default function PostsScreen() {
       <FlatList
         style={styles.postsList}
         data={posts}
-        renderItem={({ item }) => <Text>{item.title}</Text>}
+        renderItem={({ item }) => <PostCard {...item} isProfile={false} />}
         keyExtractor={(item) => item.id}
+        ItemSeparatorComponent={() => <View style={{ height: 32 }} />}
       />
-      <PostCard />
     </View>
   );
 }
@@ -52,8 +59,10 @@ const styles = StyleSheet.create({
     fontFamily: "Roboto-Regular",
     color: "#21212180",
   },
+  postsList: {
+    marginBottom: 32,
+  },
   container: {
-    // flex: 1,
     justifyContent: "center",
     alignItems: "center",
     rowGap: 32,

@@ -29,7 +29,6 @@ export default function LoginScreen() {
       email,
       password,
     });
-    console.log(`Logged In: email='${email}', password='${password}'`);
   };
 
   return (
