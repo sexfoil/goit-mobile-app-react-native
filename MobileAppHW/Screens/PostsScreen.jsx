@@ -5,7 +5,7 @@ import PostCard from "../components/PostCard";
 import { POSTS } from "../data/posts";
 
 export default function PostsScreen({ navigation, route }) {
-  const [posts, setPosts] = useState(POSTS);
+  const [posts, setPosts] = useState([]);
   const params = route?.params;
 
   useEffect(() => {
