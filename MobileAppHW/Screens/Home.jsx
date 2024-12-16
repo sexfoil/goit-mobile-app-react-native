@@ -1,6 +1,5 @@
-import { useNavigation, useRoute } from "@react-navigation/native";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
-import { StyleSheet, Text, View } from "react-native";
+import { StyleSheet } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import PostsScreen from "./PostsScreen";
 import CreatePostsScreen from "./CreatePostsScreen";
@@ -10,12 +9,13 @@ import BackArrowIcon from "../components/icons/BackArrowIcon";
 import LogoutIcon from "../components/icons/LogoutIcon";
 import MenuIcon from "../components/icons/MenuIcon";
 import UserIcon from "../components/icons/UserIcon";
+import { useDispatch } from "react-redux";
+import { logout } from "../utils/auth";
 
 const Tabs = createBottomTabNavigator();
 
 export default function HomeScreen() {
-  const rootNavigation = useNavigation();
-  const { params } = useRoute();
+  const dispatch = useDispatch();
 
   return (
     <Tabs.Navigator
@@ -37,9 +37,7 @@ export default function HomeScreen() {
         component={PostsScreen}
         options={{
           title: "Публікації",
-          headerRight: () => (
-            <LogoutIcon onPress={() => rootNavigation.goBack()} />
-          ),
+          headerRight: () => <LogoutIcon onPress={() => logout(dispatch)} />,
           tabBarIcon: ({}) => <MenuIcon />,
         }}
       />
