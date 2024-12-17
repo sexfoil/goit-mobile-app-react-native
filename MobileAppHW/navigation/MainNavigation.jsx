@@ -13,7 +13,7 @@ export default function MainNavigation() {
   const user = useSelector((state) => state.user.userInfo);
 
   return (
-    <MainStack.Navigator initialRouteName="Login">
+    <MainStack.Navigator initialRouteName="Home">
       {!user ? (
         <>
           <MainStack.Screen

@@ -2,16 +2,14 @@ import {
   createUserWithEmailAndPassword,
   signInWithEmailAndPassword,
   onAuthStateChanged,
-  updateProfile,
-  User,
   signOut,
 } from "firebase/auth";
 import { auth } from "../config";
 import { setUserInfo, clearUserInfo } from "../redux/reducers/userSlice";
-import { AppDispatch } from "../redux/store/store";
-// import { addUser, getUser, updateUserInFirestore } from "./firestore";
+import { addUser, getUser } from "./firestore";
 
-export const register = async ({ email, password }) => {
+export const registerToApp = async (login, email, password) => {
+  console.log("Creds: ", login, email, password);
   try {
     const credentials = await createUserWithEmailAndPassword(
       auth,
@@ -20,17 +18,19 @@ export const register = async ({ email, password }) => {
     );
     const user = credentials.user;
 
-    // await addUser(user.uid, {
-    //   uid: user.uid,
-    //   email: user.email,
-    //   displayName: user.displayName,
-    // });
+    await addUser(user.uid, {
+      uid: user.uid,
+      email: user.email,
+      displayName: login,
+    });
   } catch (error) {
     console.log("REGISTARTION ERROR:", error);
   }
 };
 
-export const login = async ({ email, password }, dispatch) => {
+export const loginToApp = async ({ email, password }, dispatch) => {
+  console.log("Login Creds: ", email, password);
+
   try {
     const credentials = await signInWithEmailAndPassword(auth, email, password);
     const user = credentials.user;
@@ -50,7 +50,7 @@ export const login = async ({ email, password }, dispatch) => {
   }
 };
 
-export const logout = async (dispatch) => {
+export const logoutFromApp = async (dispatch) => {
   try {
     await signOut(auth);
     dispatch(clearUserInfo());
@@ -59,7 +59,6 @@ export const logout = async (dispatch) => {
   }
 };
 
-// Відстеження змін у стані аутентифікації
 export const authStateChanged = (dispatch) => {
   onAuthStateChanged(auth, async (user) => {
     if (user) {
@@ -77,15 +76,3 @@ export const authStateChanged = (dispatch) => {
     }
   });
 };
-
-// Оновлення профілю користувача
-// export const updateUserProfile = async (update: { displayName?: string; photoURL?: string }) => {
-//   const user = auth.currentUser;
-//   if (user) {
-//     try {
-//       await updateProfile(user, update);
-//     } catch (error) {
-//       throw error;
-//     }
-//   }
-// };

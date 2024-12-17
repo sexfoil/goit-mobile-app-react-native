@@ -8,20 +8,27 @@ import {
   TouchableWithoutFeedback,
   View,
 } from "react-native";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import BackgroundImage from "../assets/images/background.png";
 import ButtonMain from "../components/ButtonMain";
 import InputField from "../components/InputField";
-import { useNavigation, useRoute } from "@react-navigation/native";
-import { login } from "../utils/auth";
+import { loginToApp } from "../utils/auth";
 import { useDispatch } from "react-redux";
 
-export default function LoginScreen() {
-  const [email, setEmail] = useState("sly@gmail.com");
-  const [password, setPassword] = useState("qwerty123");
+export default function LoginScreen({ navigation, route }) {
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
   const dispatch = useDispatch();
+  const params = route?.params;
+  // const navigation = useNavigation();
 
-  const navigation = useNavigation();
+  useEffect(() => {
+    if (!params?.email || !params?.password) {
+      return;
+    }
+    setEmail(params.email);
+    setPassword(params.password);
+  }, [params]);
 
   const handleLogin = async () => {
     if (!email && !password) {
@@ -29,7 +36,7 @@ export default function LoginScreen() {
       return;
     }
     try {
-      await login({ email, password }, dispatch);
+      await loginToApp({ email, password }, dispatch);
     } catch (err) {
       console.error("Login error:", err);
     }

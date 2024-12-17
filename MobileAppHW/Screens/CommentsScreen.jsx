@@ -1,16 +1,37 @@
 import {
+  FlatList,
   Image,
   Keyboard,
   StyleSheet,
+  Text,
   TouchableWithoutFeedback,
   View,
 } from "react-native";
 import DefaultImage from "../assets/images/default.jpg";
 import InputComment from "../components/InputComment";
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { useSelector } from "react-redux";
+import { addPost } from "../utils/firestore";
 
 export default function CommentsScreen() {
   const [comment, setComment] = useState("");
+  const [comments, setComments] = useState([]);
+
+  const user = useSelector((state) => state.user.userInfo);
+
+  useEffect(() => {
+    console.log("USE EFFECT", comment);
+  }, [comments]);
+
+  const handleAddComment = async () => {
+    console.log("Comment", comment);
+    console.log("Comments", comments);
+
+    updatedComments = [...comments, comment];
+    setComment("");
+    setComments(updatedComments);
+    await addPost(user?.uid, comments);
+  };
 
   return (
     <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
@@ -19,9 +40,22 @@ export default function CommentsScreen() {
           style={{ ...styles.image, borderWidth: 0 }}
           source={DefaultImage}
         ></Image>
+        <FlatList
+          style={styles.postsList}
+          data={comments}
+          renderItem={({ item }) => (
+            <View style={styles.comment}>
+              <Text>{item}</Text>
+            </View>
+          )}
+          keyExtractor={(item) => item}
+          ItemSeparatorComponent={() => <View style={{ height: 24 }} />}
+        />
+
         <InputComment
           inputText={comment}
           handleInputText={setComment}
+          handleAddComment={handleAddComment}
           placeholder={"Комментувати..."}
         />
       </View>
@@ -30,6 +64,14 @@ export default function CommentsScreen() {
 }
 
 const styles = StyleSheet.create({
+  comment: {
+    padding: 16,
+    textAlignVertical: "center",
+    textAlign: "center",
+    width: "100%",
+    backgroundColor: "#F6F6F650",
+    borderRadius: 5,
+  },
   image: {
     justifyContent: "center",
     alignItems: "center",

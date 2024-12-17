@@ -10,7 +10,7 @@ import LogoutIcon from "../components/icons/LogoutIcon";
 import MenuIcon from "../components/icons/MenuIcon";
 import UserIcon from "../components/icons/UserIcon";
 import { useDispatch } from "react-redux";
-import { logout } from "../utils/auth";
+import { logout, logoutFromApp } from "../utils/auth";
 
 const Tabs = createBottomTabNavigator();
 
@@ -37,7 +37,9 @@ export default function HomeScreen() {
         component={PostsScreen}
         options={{
           title: "Публікації",
-          headerRight: () => <LogoutIcon onPress={() => logout(dispatch)} />,
+          headerRight: () => (
+            <LogoutIcon onPress={() => logoutFromApp(dispatch)} />
+          ),
           tabBarIcon: ({}) => <MenuIcon />,
         }}
       />

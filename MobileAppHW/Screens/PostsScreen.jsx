@@ -3,10 +3,12 @@ import { FlatList, Image, StyleSheet, Text, View } from "react-native";
 import OwnerImage from "../assets/images/owner.jpg";
 import PostCard from "../components/PostCard";
 import { POSTS } from "../data/posts";
+import { useSelector } from "react-redux";
 
 export default function PostsScreen({ navigation, route }) {
   const [posts, setPosts] = useState([]);
   const params = route?.params;
+  const user = useSelector((state) => state.user.userInfo);
 
   useEffect(() => {
     if (!params?.newPost) {
@@ -21,8 +23,10 @@ export default function PostsScreen({ navigation, route }) {
       <View style={styles.owner}>
         <Image style={styles.ownerImage} source={OwnerImage} />
         <View>
-          <Text style={styles.ownerInfoName}>Вячеслав Поляков</Text>
-          <Text style={styles.ownerInfoEmail}>78slavapolyakov@gmail.com</Text>
+          <Text style={styles.ownerInfoName}>
+            {user?.displayName || "Incognito"}
+          </Text>
+          <Text style={styles.ownerInfoEmail}>{user?.email}</Text>
         </View>
       </View>
       <FlatList

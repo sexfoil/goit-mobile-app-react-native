@@ -13,20 +13,21 @@ import BackgroundImage from "../assets/images/background.png";
 import ButtonMain from "../components/ButtonMain";
 import InputField from "../components/InputField";
 import AvatarBox from "../components/AvatarBox";
+import { registerToApp } from "../utils/auth";
 import { useNavigation } from "@react-navigation/native";
 
 export default function RegistrationScreen() {
-  const [login, setLogin] = useState("");
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-
+  const [login, setLogin] = useState("test2");
+  const [email, setEmail] = useState("test2@gmail.com");
+  const [password, setPassword] = useState("qwerty123");
   const navigation = useNavigation();
 
-  const handleSubmit = () => {
+  const handleRegister = async () => {
     if (!login && !email && !password) {
       alert("Login, Email and Password must not be empty!");
     } else {
-      alert(`Registered: email='${email}', password='${password}'`);
+      await registerToApp(login, email, password);
+      navigation.navigate("Login", { email, password });
     }
   };
 
@@ -58,7 +59,7 @@ export default function RegistrationScreen() {
               extra={"Показати"}
             />
           </KeyboardAvoidingView>
-          <ButtonMain handleSubmit={handleSubmit} title={"Зареєстуватися"} />
+          <ButtonMain handleSubmit={handleRegister} title={"Зареєстуватися"} />
           <Text style={styles.helpText}>
             Вже є акаунт?{" "}
             <Text

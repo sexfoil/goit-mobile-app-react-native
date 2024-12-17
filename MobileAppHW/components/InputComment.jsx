@@ -1,9 +1,18 @@
-import { StyleSheet, Text, TextInput, View } from "react-native";
+import {
+  StyleSheet,
+  Text,
+  TextInput,
+  TouchableOpacity,
+  View,
+} from "react-native";
 import PublishCommentIcon from "./icons/PublishCommentIcon";
+import { useSelector } from "react-redux";
+import { addPost } from "../utils/firestore";
 
 export default function InputComment({
   inputText,
   handleInputText,
+  handleAddComment,
   placeholder,
 }) {
   return (
@@ -18,9 +27,11 @@ export default function InputComment({
           value={inputText}
           onChangeText={(value) => handleInputText(value)}
         ></TextInput>
-        <View style={styles.publish}>
-          <PublishCommentIcon />
-        </View>
+        <TouchableOpacity onPress={handleAddComment}>
+          <View style={styles.publish}>
+            <PublishCommentIcon />
+          </View>
+        </TouchableOpacity>
       </View>
     </View>
   );
