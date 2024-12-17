@@ -5,7 +5,6 @@ import { getStorage } from "firebase/storage";
 
 const firebaseConfig = {
   apiKey: "AIzaSyBJdUcGQ2sG2GWqX3kvX0bEYUaxXUvecug",
-  // apiKey: "AIzaSyCeqmzQLqZuhnPp6yFi39DSesMAhUAK-hU",
   authDomain: "mobile-app-hw-goit.firebaseapp.com",
   databaseURL: "<https://mobile-app-hw-goit.firebaseio.com>",
   projectId: "mobile-app-hw-goit",
